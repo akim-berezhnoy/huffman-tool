@@ -1,0 +1,27 @@
+name: C++ CI
+
+on:
+  pull_request
+
+jobs:
+  test:
+    name: Tests in ${{ matrix.build_type }}
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        build_type: [Release, Debug, RelWithDebInfo]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: dependencies
+      run: sudo apt install binutils g++ cmake valgrind
+
+    - name: Build main
+      run: ./build.sh ${{ matrix.build_type }}
+
+    - name: Test main
+      run: ./test.sh ${{ matrix.build_type }}
+
+    - if: ${{ matrix.build_type == 'RelWithDebInfo' }}
+      name: Test main with valgrind
+      run: ./test-valgrind.sh
