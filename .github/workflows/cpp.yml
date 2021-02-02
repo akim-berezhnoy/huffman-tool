@@ -5,19 +5,20 @@ on:
 
 jobs:
   test:
-    name: Tests in ${{ matrix.build_type }}
+    name: Tests in ${{ matrix.build_type }} with ${{ matrix.compiler }} 
     runs-on: ubuntu-20.04
     strategy:
       matrix:
         build_type: [Release, Debug, RelWithDebInfo]
+        compiler: [g++, clang++]
 
     steps:
     - uses: actions/checkout@v1
     - name: dependencies
-      run: sudo apt update && sudo apt install binutils g++ cmake valgrind
+      run: sudo apt update && sudo apt install binutils gcc clang cmake valgrind 
 
     - name: Build main
-      run: ./build.sh ${{ matrix.build_type }}
+      run: CXX=${{ matrix.compiler }} ./build.sh ${{ matrix.build_type }}
 
     - name: Test main
       run: ./test.sh ${{ matrix.build_type }}
