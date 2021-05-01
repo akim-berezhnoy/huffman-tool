@@ -18,11 +18,11 @@ jobs:
       run: sudo apt update && sudo apt install binutils gcc clang cmake valgrind 
 
     - name: Build main
-      run: CXX=${{ matrix.compiler }} ./build.sh ${{ matrix.build_type }}
+      run: CXX=${{ matrix.compiler }} ci-extra/build.sh ${{ matrix.build_type }}
 
     - name: Test main
-      run: ./test.sh ${{ matrix.build_type }}
+      run: ci-extra/test.sh ${{ matrix.build_type }}
 
     - if: ${{ matrix.build_type == 'RelWithDebInfo' }}
       name: Test main with valgrind
-      run: ./test-valgrind.sh
+      run: ci-extra/test-valgrind.sh
