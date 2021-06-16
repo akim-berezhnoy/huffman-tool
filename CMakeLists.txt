@@ -35,5 +35,5 @@ elseif (NOT MSVC)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=undefined,address,leak -fno-sanitize-recover=all -D_GLIBCXX_DEBUG")
 endif()
 
-add_executable(main main.cpp)
-target_link_libraries(main gtest_main)
+add_executable(tests tests.cpp)
+target_link_libraries(tests gtest_main)
