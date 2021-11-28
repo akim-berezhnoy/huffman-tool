@@ -6,7 +6,7 @@
 set -euo pipefail
 IFS=$' \t\n'
 
-if git show-ref --verify --quiet refs/heads/feedback; then
+if git remote | grep --quiet upstream; then
     echo "init-repo.sh was already done on this repository."
     exit 1
 fi
@@ -18,6 +18,7 @@ if [ -n "$(git status --untracked-files=no --porcelain)" ]; then
     exit 1
 fi
 
+git remote add upstream git@github.com:CPP-KT/template-task.git #CHANGE ME
 git fetch upstream
 git branch feedback upstream/master
 git push -u origin feedback:feedback
