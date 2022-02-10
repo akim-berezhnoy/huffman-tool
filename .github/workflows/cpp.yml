@@ -5,30 +5,41 @@ on:
 
 jobs:
   test:
-    name: Tests in ${{ matrix.build_type }} with ${{ matrix.compiler }} 
+    name: Tests in ${{ matrix.build_type }} with ${{ matrix.compiler }}
     runs-on: ubuntu-20.04
     container: ubuntu:21.10
     env:
       DEBIAN_FRONTEND: noninteractive
     strategy:
       matrix:
-        build_type: [Release, Debug, RelWithDebInfo]
-        compiler: [g++, clang++]
+        build_type: [Release, Debug, SanitizedDebug]
+        compilerSetter: [CC=gcc CXX=g++, CC=clang CXX='clang++ -stdlib=libc++']
+        # build_type: [RelWithDebInfo]
+        # compiler: [clang++]
 
     steps:
     - name: dependencies
       run: |
         apt-get update
-        apt-get install -y git build-essential binutils gcc clang cmake valgrind libc++-dev libc++abi-dev libunwind-13-dev
-      
+        apt-get install -y gpg wget
+        wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+        echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null
+
+        apt-get update
+        apt-get install -y git build-essential binutils gcc clang cmake valgrind libc++-dev libc++abi-dev ninja-build curl zip unzip tar pkg-config libunwind-13-dev kitware-archive-keyring
+        cd ..
+        git clone https://github.com/microsoft/vcpkg.git
+        ./vcpkg/bootstrap-vcpkg.sh
+        cd $GITHUB_WORKSPACE
+
     - uses: actions/checkout@v2
 
     - name: Build main
-      run: CXX=${{ matrix.compiler }} ci-extra/build.sh ${{ matrix.build_type }}
+      run: ${{ matrix.compilerSetter }} ci-extra/build.sh ${{ matrix.build_type }}
 
     - name: Test main
       run: ci-extra/test.sh ${{ matrix.build_type }}
 
-    - if: ${{ matrix.build_type == 'RelWithDebInfo' }}
+    - if: ${{ matrix.build_type == 'Debug' }}
       name: Test main with valgrind
       run: ci-extra/test-valgrind.sh

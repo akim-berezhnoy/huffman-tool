@@ -1,39 +1,28 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.21)
 project(template)
 
 set(CMAKE_CXX_STANDARD 17)
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-endif()
-
-configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-        RESULT_VARIABLE result
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download)
-if (result)
-  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
-endif ()
-execute_process(COMMAND ${CMAKE_COMMAND} --build .
-        RESULT_VARIABLE result
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download)
-if (result)
-  message(FATAL_ERROR "Build step for googletest failed: ${result}")
-endif ()
-
-add_subdirectory(
-        ${CMAKE_CURRENT_BINARY_DIR}/googletest-src
-        ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
-        EXCLUDE_FROM_ALL
-)
-
-if (CYGWIN OR MINGW OR MSYS)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-sign-compare -pedantic")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_GLIBCXX_DEBUG")
-elseif (NOT MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-sign-compare -pedantic")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=undefined,address,leak -fno-sanitize-recover=all -D_GLIBCXX_DEBUG")
-endif()
+find_package(GTest REQUIRED)
 
 add_executable(tests tests.cpp)
-target_link_libraries(tests gtest_main)
+
+if (NOT MSVC)
+  target_compile_options(tests PRIVATE -Wall -Wno-sign-compare -pedantic)
+endif()
+
+option(USE_SANITIZERS "Enable to build with undefined,leak and address sanitizers" OFF)
+if (USE_SANITIZERS)
+  target_compile_options(tests PUBLIC -fsanitize=address,undefined,leak -fno-sanitize-recover=all)
+  target_link_options(tests PUBLIC -fsanitize=address,undefined,leak)
+endif()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(tests PUBLIC -stdlib=libc++)
+endif()
+
+if (CMAKE_BUILD_TYPE MATCHES "Debug")
+  target_compile_options(tests PUBLIC -D_GLIBCXX_DEBUG)
+endif()
+
+target_link_libraries(tests GTest::gtest GTest::gtest_main)
