@@ -12,10 +12,8 @@ jobs:
       DEBIAN_FRONTEND: noninteractive
     strategy:
       matrix:
-        build_type: [Release, Debug, SanitizedDebug]
+        build_type: [Release, SanitizedDebug, RelWithDebInfo]
         compilerSetter: [CC=gcc CXX=g++, CC=clang CXX='clang++ -stdlib=libc++']
-        # build_type: [RelWithDebInfo]
-        # compiler: [clang++]
 
     steps:
     - name: dependencies
@@ -40,6 +38,6 @@ jobs:
     - name: Test main
       run: ci-extra/test.sh ${{ matrix.build_type }}
 
-    - if: ${{ matrix.build_type == 'Debug' }}
+    - if: ${{ matrix.build_type == 'RelWithDebInfo' }}
       name: Test main with valgrind
       run: ci-extra/test-valgrind.sh
