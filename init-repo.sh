@@ -18,7 +18,7 @@ if [ -n "$(git status --untracked-files=no --porcelain)" ]; then
     exit 1
 fi
 
-git remote add upstream git@github.com:CPP-KT/template-task.git #CHANGE ME
+git remote add upstream git@github.com:CPP-KT/huffman-task.git #CHANGE ME
 git fetch upstream
 git branch feedback upstream/master
 git push -u origin feedback:feedback

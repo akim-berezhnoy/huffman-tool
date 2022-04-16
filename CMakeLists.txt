@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 3.21)
-project(template)
+project(huffman)
 
 set(CMAKE_CXX_STANDARD 17)
 
 find_package(GTest REQUIRED)
 
-add_executable(tests tests.cpp)
+# NOTE: huffman functional must be implemented as library and linked to the executables
+# NOTE: tool target name must be huffman-tool
+
+add_executable(tests unit-tests/tests.cpp)
 
 if (NOT MSVC)
   target_compile_options(tests PRIVATE -Wall -Wno-sign-compare -pedantic)
