@@ -10,6 +10,7 @@ find_package(GTest REQUIRED)
 
 add_executable(tests unit-tests/tests.cpp)
 
+# don't forget to use same flags at your library 
 if (NOT MSVC)
   target_compile_options(tests PRIVATE -Wall -Wno-sign-compare -pedantic)
 endif()
