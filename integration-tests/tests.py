@@ -70,7 +70,7 @@ class TestCaseBase(unittest.TestCase):
     def download_orig(self, url):
         if os.path.exists(self.orig):
             return
-        debug('\nDownloading file {} for test, this may take time, please wait...'.format(self.orig))
+        debug(f'\nDownloading file {self.orig} for test, this may take time, please wait...')
         r = requests.get(url, stream=True)
         self.assertEqual(r.status_code, 200, 'Response code for file download not 200')
         with open(self.orig, 'wb') as f:
@@ -92,10 +92,10 @@ class TestCaseBase(unittest.TestCase):
 
         if profiling:
             elapsed = float(split_output[-2])
-            self.assertLessEqual(elapsed, limit, 'Command in {} mode took too much time'.format(mode))
+            self.assertLessEqual(elapsed, limit, f'Command in {mode} mode took too much time')
 
         if not expect_error:
-            self.assertTrue(os.path.exists(fo), 'Output file in {} mode was not created'.format(mode))
+            self.assertTrue(os.path.exists(fo), f'Output file in {mode} mode was not created')
 
     def run_tool_common(self, mode, expect_error=False, profiling=False, limit=100., more_args=None):
         if more_args is None:
@@ -103,7 +103,7 @@ class TestCaseBase(unittest.TestCase):
         fi, fo = (self.orig, self.comp) if (mode == 'compress') else (self.comp, self.decomp)
 
         args = [
-            ('--{}'.format(mode), ''),
+            (f'--{mode}', ''),
             ('--input', fi),
             ('--output', fo)
         ]
@@ -314,7 +314,7 @@ class TestRandomDirectories(unittest.TestCase):
     def batch_compare(self, first, second):
         with open(first, 'rb') as f:
             with open(second, 'rb') as s:
-                self.assertEqual(f.read(CHUNK_SIZE), s.read(CHUNK_SIZE), 'Files do not match: {} and {}'.format(first, second))
+                self.assertEqual(f.read(CHUNK_SIZE), s.read(CHUNK_SIZE), f'Files do not match: {first} and {second}')
 
     def run_dir(self, dir, random_help=0.):
         tmp = tempfile.gettempdir()
@@ -329,7 +329,7 @@ class TestRandomDirectories(unittest.TestCase):
                 if random.random() < random_help:
                     continue
                 max_len = max(max_len, len(path))
-                debug('Running on {}'.format(path).ljust(max_len + 12), end='\r')
+                debug(f'Running on {path}'.ljust(max_len + 12), end='\r')
 
                 comp = os.path.join(tmp, filename) + '.huf'
                 decomp = os.path.join(tmp, filename) + '.dehuf'
