@@ -34,7 +34,7 @@ endif()
 option(USE_SANITIZERS "Enable to build with undefined,leak and address sanitizers" OFF)
 if(USE_SANITIZERS)
   message(STATUS "Enabling sanitizers...")
-  add_link_options(-fsanitize=address,undefined,leak -fno-sanitize-recover=all)
+  add_compile_options(-fsanitize=address,undefined,leak -fno-sanitize-recover=all)
   add_link_options(-fsanitize=address,undefined,leak)
 endif()
 
