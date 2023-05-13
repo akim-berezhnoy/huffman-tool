@@ -8,10 +8,10 @@ set -euo pipefail
 IFS=$' \t\n'
 
 if [ -n "$(git status --untracked-files=no --porcelain)" ]; then
-    echo "In order to update the repository working directory must"
-    echo "be clean. Please commit, checkout or stash changes and run"
-    echo "./update-repo.sh again."
-    exit 1
+  echo "In order to update the repository working directory must"
+  echo "be clean. Please commit, checkout or stash changes and run"
+  echo "./update-repo.sh again."
+  exit 1
 fi
 
 git checkout feedback

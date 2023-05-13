@@ -3,12 +3,6 @@
 .idea
 *.cbp
 
-# Google tests
-googletest-build/
-googletest-download/
-googletest-src/
-lib/
-
 # Cmake
 CMakeCache.txt
 CMakeFiles/
@@ -19,6 +13,9 @@ Makefile
 # vcpkg
 vcpkg_installed/
 vcpkg-manifest-install.log
+
+# OS
+.DS_Store
 
 # python
 **/__pycache__/
