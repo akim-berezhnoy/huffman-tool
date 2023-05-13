@@ -13,4 +13,4 @@ valgrind --tool=memcheck \
   --vgdb=no \
   --error-exitcode=1 \
   --suppressions="${SCRIPT_DIR}/valgrind.suppressions" \
-  cmake-build-RelWithDebInfo/tests
+  cmake-build-RelWithDebInfo/unit-tests/tests

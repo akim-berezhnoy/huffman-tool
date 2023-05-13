@@ -16,7 +16,7 @@ if [[ $1 == "Debug" ]]; then
     -ex 'set print frame-arguments all' \
     -ex 'run' \
     -ex 'thread apply all bt -frame-info source-and-location -full' \
-    --args cmake-build-$1/tests
+    --args cmake-build-$1/unit-tests/tests
 else
-  cmake-build-$1/tests
+  cmake-build-$1/unit-tests/tests
 fi
