@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.21)
-project(huffman-unit-tests)
+project(unit-tests)
 
 set(CMAKE_CXX_STANDARD 20)
 
 find_package(GTest REQUIRED)
 
-add_executable(tests tests.cpp)
+file(GLOB TEST_CPP_FILES *.cpp)
+add_executable(unit-tests ${TEST_CPP_FILES})
 
-target_link_libraries(tests GTest::gtest GTest::gtest_main)
+target_link_libraries(unit-tests GTest::gtest GTest::gtest_main lib)

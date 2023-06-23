@@ -4,6 +4,10 @@ project(huffman)
 # NOTE: huffman functionality should be implemented as a library and linked to the executables
 # NOTE: tool target name must be "huffman-tool"
 
+set(CMAKE_CXX_STANDARD 20)
+
+add_subdirectory(lib)
+add_subdirectory(huffman-tool)
 add_subdirectory(unit-tests)
 
 if(MSVC)
