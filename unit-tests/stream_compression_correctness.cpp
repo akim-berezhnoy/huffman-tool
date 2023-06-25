@@ -1,9 +1,8 @@
-#include <gtest/gtest.h>
-
+#include "encoding-decoding.h"
 #include "ss.h"
 #include "test_utils.h"
 
-#include "encoding-decoding.h"
+#include <gtest/gtest.h>
 
 class stream_compression_correctness : public testing::Test {};
 
@@ -13,7 +12,7 @@ using std::vector;
 
 using CHAR = std::numeric_limits<char>;
 
-const static vector<size_t> stream_sizes = {1, 2, 3, 10, 30, 50, 100, 1000, 10000, 100000};
+static const vector<size_t> stream_sizes = {1, 2, 3, 10, 30, 50, 100, 1000, 10000, 100000};
 
 using mode = ss::mode;
 
@@ -25,32 +24,36 @@ TEST(stream_compression_correctness, empty_file) {
 TEST(stream_compression_correctness, file_with_only_one_type_of_letter) {
   ss initial;
   for (char c = CHAR::min(); c < CHAR::max(); ++c) {
-    for (size_t i = 0; i < abs(c); ++i)
+    for (size_t i = 0; i < abs(c); ++i) {
       initial << c;
+    }
     test_encode_decode(initial);
   }
 }
 
 TEST(stream_compression_correctness, english_charset) {
-  for (size_t size : stream_sizes)
-    test_multiple_times([&](){
+  for (size_t size : stream_sizes) {
+    test_multiple_times([&]() {
       ss initial(size, mode::english);
       test_encode_decode(initial);
     });
+  }
 }
 
 TEST(stream_compression_correctness, cpp_charset) {
-  for (size_t size : stream_sizes)
-    test_multiple_times([&](){
+  for (size_t size : stream_sizes) {
+    test_multiple_times([&]() {
       ss initial(size, mode::code);
       test_encode_decode(initial);
     });
+  }
 }
 
 TEST(stream_compression_correctness, random_charset) {
-  for (size_t size : stream_sizes)
-    test_multiple_times([&](){
+  for (size_t size : stream_sizes) {
+    test_multiple_times([&]() {
       ss initial(size, mode::random);
       test_encode_decode(initial);
     });
+  }
 }

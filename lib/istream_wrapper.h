@@ -53,7 +53,7 @@ struct istream_wrapper {
       c << read();
       length -= UCHAR_BIT;
     }
-    while (length --> 0) {
+    while (length-- > 0) {
       c << static_cast<bool>(read(1));
     }
     return c;

@@ -1,11 +1,12 @@
 #pragma once
 
+#include "coder.h"
 #include "codeword.h"
 #include "constants.h"
 #include "huffman_tree.h"
 #include "istream_wrapper.h"
 #include "ostream_wrapper.h"
-#include "coder.h"
+#include "signature_manager.h"
 
 #include <istream>
 #include <vector>

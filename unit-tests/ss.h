@@ -27,7 +27,6 @@ public:
   operator stream&() {
     return ios;
   }
-
   ss(size_t n) : ss(n, mode::random) {}
 
   ss(size_t n, mode m) {

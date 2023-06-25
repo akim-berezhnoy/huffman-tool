@@ -1,5 +1,5 @@
-#include "encoder.h"
 #include "decoder.h"
+#include "encoder.h"
 
 void encode(istream& is, ostream& os) {
   encoder::apply_encode(is, os);

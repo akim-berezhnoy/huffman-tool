@@ -1,7 +1,6 @@
-#include "gtest/gtest.h"
-
-#include "ss.h"
 #include "encoding-decoding.h"
+#include "gtest/gtest.h"
+#include "ss.h"
 
 static constexpr size_t HUGE_SIZE = static_cast<size_t>(1) << 31;
 

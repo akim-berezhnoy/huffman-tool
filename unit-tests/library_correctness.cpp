@@ -1,11 +1,10 @@
+#include "codeword.h"
 #include "gtest/gtest.h"
-
-#include "test_utils.h"
-#include "ss.h"
 #include "istream_wrapper.h"
 #include "ostream_wrapper.h"
 #include "random_generator.h"
-#include "codeword.h"
+#include "ss.h"
+#include "test_utils.h"
 
 class library_correctness : public testing::Test {};
 
@@ -29,7 +28,7 @@ static uchar pass_bits_from_istream(istream_wrapper& iw, size_t bits) {
 
 TEST(library_correctness, istream_wrapper) {
   size_t bits = 1;
-  test_multiple_times([&](){
+  test_multiple_times([&]() {
     for (size_t letters = 1; letters < 500; ++letters) {
       ss in(letters, ss::mode::english);
       istream_wrapper iw(in);
@@ -45,7 +44,7 @@ TEST(library_correctness, istream_wrapper) {
 
 TEST(library_correctness, ostream_wrapper) {
   size_t bits = 1;
-  test_multiple_times([&](){
+  test_multiple_times([&]() {
     for (size_t letters = 1; letters < 500; ++letters) {
       ss in(letters);
       ss out;
@@ -60,7 +59,7 @@ TEST(library_correctness, ostream_wrapper) {
 }
 
 TEST(library_correctness, codeword) {
-  test_multiple_times([](){
+  test_multiple_times([]() {
     ss s;
     ostream_wrapper ow(s.ios);
     for (size_t letters = 1; letters < 500; ++letters) {
@@ -78,4 +77,3 @@ TEST(library_correctness, codeword) {
     }
   });
 }
-
