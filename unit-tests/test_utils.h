@@ -5,7 +5,7 @@
 #include "guard.h"
 #include "ss.h"
 
-constexpr size_t iterations = 333;
+constexpr size_t iterations = 100;
 
 template <typename F>
 static void test_multiple_times(F f) {

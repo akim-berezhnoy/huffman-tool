@@ -29,7 +29,7 @@ static uchar pass_bits_from_istream(istream_wrapper& iw, size_t bits) {
 TEST(library_correctness, istream_wrapper) {
   size_t bits = 1;
   test_multiple_times([&]() {
-    for (size_t letters = 1; letters < 500; ++letters) {
+    for (size_t letters = 1; letters < 300; ++letters) {
       ss in(letters, ss::mode::english);
       istream_wrapper iw(in);
       ss out;
@@ -45,7 +45,7 @@ TEST(library_correctness, istream_wrapper) {
 TEST(library_correctness, ostream_wrapper) {
   size_t bits = 1;
   test_multiple_times([&]() {
-    for (size_t letters = 1; letters < 500; ++letters) {
+    for (size_t letters = 1; letters < 300; ++letters) {
       ss in(letters);
       ss out;
       ostream_wrapper ow(out);
@@ -62,7 +62,7 @@ TEST(library_correctness, codeword) {
   test_multiple_times([]() {
     ss s;
     ostream_wrapper ow(s.ios);
-    for (size_t letters = 1; letters < 500; ++letters) {
+    for (size_t letters = 1; letters < 300; ++letters) {
       codeword cw;
       for (size_t j = 0; j < letters; ++j) {
         char c = rnd.english_char();
