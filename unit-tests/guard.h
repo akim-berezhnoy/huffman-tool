@@ -2,13 +2,10 @@
 
 #include "ss.h"
 
-template<typename T>
+template <typename T>
 class guard {
 public:
-  explicit guard(T& stream)
-      : stream_after_cycle(stream)
-      , initial_stream(stream)
-  {}
+  explicit guard(T& stream) : stream_after_cycle(stream), initial_stream(stream) {}
 
   guard(const guard&) = delete;
 

@@ -30,5 +30,4 @@ struct signature_manager {
       ow.write(c);
     }
   }
-
 };

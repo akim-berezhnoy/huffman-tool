@@ -61,7 +61,7 @@ struct istream_wrapper {
 
   size_t read_number() {
     size_t ret = 0;
-    for (size_t i = 4; i --> 0;) {
+    for (size_t i = 4; i-- > 0;) {
       ret |= static_cast<size_t>(read()) << (i * UCHAR_BIT);
     }
     return ret;
@@ -72,12 +72,10 @@ struct istream_wrapper {
   }
 
 private:
-
   uchar next() {
     if (exhausted()) {
       throw wrong_input_file();
     }
     return static_cast<uchar>(*_it++);
   }
-
 };

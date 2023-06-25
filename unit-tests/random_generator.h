@@ -6,7 +6,7 @@
 
 class random_generator {
 
-  template<int64_t MIN, int64_t MAX>
+  template <int64_t MIN, int64_t MAX>
   class generator {
 
     std::mt19937 rng;
@@ -14,21 +14,19 @@ class random_generator {
 
   public:
     generator()
-      : rng(sizeof "daaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaamn")
-      , dist(MIN, MAX)
-    {}
+        : rng(sizeof "daaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaamn"),
+          dist(MIN, MAX) {}
 
     std::mt19937::result_type operator()() {
       return dist(rng);
     };
-
   };
 
   using CHAR = std::numeric_limits<char>;
 
   generator<CHAR::min(), CHAR::max()> r_char;
-  generator<48,125> c_char;
-  generator<95,122> e_char;
+  generator<48, 125> c_char;
+  generator<95, 122> e_char;
 
 public:
   char random_char() {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include<istream>
-#include<ostream>
+#include <istream>
+#include <ostream>
 
 void encode(std::istream& is, std::ostream& os);
 

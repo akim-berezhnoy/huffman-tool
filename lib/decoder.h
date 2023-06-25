@@ -21,7 +21,6 @@ class decoder : coder {
 
   decoder() = default;
 
-
   void decode(istream& is, ostream& os) {
     auto iw = istream_wrapper(is);
     signature_manager::check_signature(iw);
@@ -34,12 +33,8 @@ class decoder : coder {
       codewords_lengths[ch] = true;
       ch = iw.read();
     } while (ch != '\0');
-    for_all_letters([this, &iw](uchar l){
-      codewords_lengths[l] = iw.read();
-    });
-    for_all_letters([this, &iw](uchar l){
-      codewords[l] = iw.read_codeword(codewords_lengths[l]);
-    });
+    for_all_letters([this, &iw](uchar l) { codewords_lengths[l] = iw.read(); });
+    for_all_letters([this, &iw](uchar l) { codewords[l] = iw.read_codeword(codewords_lengths[l]); });
     build_huffman_tree();
     auto ow = ostream_wrapper(os);
     for (size_t i = 0; i < file_length; ++i) {
@@ -52,7 +47,9 @@ class decoder : coder {
     if (current->is_leaf()) {
       return static_cast<leaf*>(current)->_value;
     } else {
-      if (current->is_leaf()) throw istream_wrapper::wrong_input_file();
+      if (current->is_leaf()) {
+        throw istream_wrapper::wrong_input_file();
+      }
       bool bit = iw.read(1);
       if (bit) {
         return parse_letter(current->_right_child, iw);
@@ -63,9 +60,7 @@ class decoder : coder {
   }
 
   void build_huffman_tree() {
-    for_all_letters([this](uchar l){
-      build_branch(codewords[l].code, l);
-    });
+    for_all_letters([this](uchar l) { build_branch(codewords[l].code, l); });
   }
 
   void build_branch(vector<bool>& code, uchar letter) {
@@ -87,12 +82,10 @@ class decoder : coder {
   }
 
 public:
-
   static void apply_decode(istream& is, ostream& os) {
     decoder d;
     d.decode(is, os);
   }
 
   decoder& operator=(const decoder&) = delete;
-
 };

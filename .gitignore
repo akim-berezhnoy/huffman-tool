@@ -6,7 +6,6 @@
 # Cmake
 CMakeCache.txt
 CMakeFiles/
-venv/
 cmake-build*
 cmake_install.cmake
 Makefile
@@ -21,7 +20,12 @@ vcpkg-manifest-install.log
 # python
 **/__pycache__/
 .pytest_cache/
+venv/
 
 # integration tests data
 integration-tests/data/basov.pdf
 integration-tests/data/buggati.jpg
+
+# my
+
+run-clang-format.sh

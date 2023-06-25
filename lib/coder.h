@@ -2,7 +2,7 @@
 
 #include "codeword.h"
 
-#include<cctype>
+#include <cctype>
 
 class coder {
 protected:
@@ -10,7 +10,7 @@ protected:
   size_t letter_info[UCHAR_STATES]{};
   codeword codewords[UCHAR_STATES]{};
 
-  template<typename F>
+  template <typename F>
   void for_all_letters(F f) {
     uchar letter = 0;
     do {
@@ -19,5 +19,4 @@ protected:
       }
     } while (++letter != 0);
   }
-
 };

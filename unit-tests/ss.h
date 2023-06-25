@@ -15,7 +15,6 @@ public:
   stream ios;
 
 public:
-
   enum class mode {
     random,
     english,
@@ -27,10 +26,11 @@ public:
   operator stream&() {
     return ios;
   }
+
   ss(size_t n) : ss(n, mode::random) {}
 
   ss(size_t n, mode m) {
-    while (n --> 0) {
+    while (n-- > 0) {
       switch (m) {
       case mode::random:
         ios << rnd.random_char();

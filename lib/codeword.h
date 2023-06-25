@@ -28,5 +28,4 @@ struct codeword {
       out.code.push_back((letter >> (UCHAR_BIT - i)) & 1);
     }
   }
-
 };

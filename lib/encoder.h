@@ -1,11 +1,11 @@
 #pragma once
 
+#include "coder.h"
 #include "codeword.h"
 #include "huffman_tree.h"
 #include "istream_wrapper.h"
 #include "node_comparer.h"
 #include "ostream_wrapper.h"
-#include "coder.h"
 #include "signature_manager.h"
 
 #include <queue>
@@ -35,7 +35,7 @@ class encoder : coder {
       return;
     }
     std::priority_queue<node*, std::vector<node*>, node_comparer> nodes;
-    for_all_letters([this, &nodes](uchar l){
+    for_all_letters([this, &nodes](uchar l) {
       node* letter = new leaf(l, frequencies[l]);
       nodes.push(letter);
     });
@@ -64,16 +64,10 @@ class encoder : coder {
       return;
     }
     ow.write_number(file_length);
-    for_all_letters([this, &ow](uchar l){
-      ow.write(l);
-    });
+    for_all_letters([this, &ow](uchar l) { ow.write(l); });
     ow.write('\0');
-    for_all_letters([this, &ow](uchar l){
-      ow.write(static_cast<uchar>(codewords[l].code.size()));
-    });
-    for_all_letters([this, &ow](uchar l){
-      ow << codewords[l];
-    });
+    for_all_letters([this, &ow](uchar l) { ow.write(static_cast<uchar>(codewords[l].code.size())); });
+    for_all_letters([this, &ow](uchar l) { ow << codewords[l]; });
     auto iw = istream_wrapper(is);
     while (!iw.exhausted()) {
       ow << codewords[iw.read()];
@@ -94,7 +88,6 @@ class encoder : coder {
   }
 
 public:
-
   static void apply_encode(istream& is, ostream& os) {
     encoder e;
     e.prepare_encoding(is);
@@ -103,5 +96,4 @@ public:
   }
 
   encoder& operator=(const encoder&) = delete;
-
 };

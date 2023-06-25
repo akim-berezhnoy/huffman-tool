@@ -1,7 +1,7 @@
 #pragma once
 
-#include<cctype>
-#include<ostream>
+#include <cctype>
+#include <ostream>
 
 using std::ostream;
 
@@ -49,8 +49,8 @@ struct ostream_wrapper {
   }
 
   void write_number(size_t number) {
-    for (size_t i = 4; i --> 0;) {
-      write(number >> (i*UCHAR_BIT), UCHAR_BIT);
+    for (size_t i = 4; i-- > 0;) {
+      write(number >> (i * UCHAR_BIT), UCHAR_BIT);
     }
   }
 
@@ -64,5 +64,4 @@ struct ostream_wrapper {
   ~ostream_wrapper() {
     flush();
   }
-
 };
