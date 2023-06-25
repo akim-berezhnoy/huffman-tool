@@ -27,7 +27,7 @@ jobs:
     name: Tests in ${{ matrix.build_type }} with ${{ matrix.compilerSetter }}
     runs-on: ubuntu-22.04
     container:
-      image: ubuntu:22.04
+      image: ubuntu:23.04
       options: --privileged
     env:
       DEBIAN_FRONTEND: noninteractive
@@ -38,8 +38,8 @@ jobs:
         build_type: [Release, Debug, SanitizedDebug, RelWithDebInfo]
         # clang-15 uses dwarf-5 which valgrind doesn't support yet
         compilerSetter: [
-          CC=gcc-12 CXX=g++-12,
-          CC=clang-15 CXX='clang++-15 -gdwarf-4 -stdlib=libc++' ASAN_OPTIONS=alloc_dealloc_mismatch=0
+          gcc-13 g++-13,
+          clang-16 clang++-16
         ]
     defaults:
       run:
@@ -58,14 +58,12 @@ jobs:
             | tee /etc/apt/sources.list.d/kitware.list >/dev/null
 
           apt-get update
-          apt-get install -y git build-essential binutils g++-12 gcc-12 clang-15 cmake valgrind libc++-15-dev libc++abi-15-dev \
-            ninja-build curl zip unzip tar pkg-config kitware-archive-keyring gdb python3 python3-pip time
+          apt-get install -y git build-essential binutils g++-13 gcc-13 clang-16 clang++-16 libc++abi-16-dev libc++-16-dev libstdc++-13-dev cmake \
+            ninja-build curl zip unzip tar pkg-config kitware-archive-keyring gdb python3 python3-requests time 
           cd ..
           git clone https://github.com/microsoft/vcpkg.git
           ./vcpkg/bootstrap-vcpkg.sh
           cd $GITHUB_WORKSPACE
-
-          pip3 install requests
 
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -91,7 +89,7 @@ jobs:
           fi
 
       - name: Build main
-        run: ${{ matrix.compilerSetter }} ci-extra/build.sh ${{ matrix.build_type }}
+        run: ci-extra/build.sh ${{ matrix.build_type }} ${{ matrix.compilerSetter }}
 
       - name: Test main
         run: |
@@ -99,11 +97,24 @@ jobs:
             echo -ne '\e[0;33mWARNING: Tests were not updated on your side. '
             echo -e 'This script will however run the most recent version.\e[0m'
           fi
-          ${{ matrix.compilerSetter }} ci-extra/test.sh ${{ matrix.build_type }}
+          if [[ ${{ matrix.build_type }} == "SanitizedDebug" ]]; then
+            ASAN_OPTIONS=alloc_dealloc_mismatch=0 ci-extra/test.sh ${{ matrix.build_type }}
+          else
+            ci-extra/test.sh ${{ matrix.build_type }}
+          fi
 
       - if: ${{ matrix.build_type == 'RelWithDebInfo' }}
         name: Test main with valgrind
-        run: ${{ matrix.compilerSetter }} ci-extra/test-valgrind.sh
+        run: |
+          cd ..
+          wget https://sourceware.org/pub/valgrind/valgrind-3.21.0.tar.bz2
+          tar xvf valgrind-3.21.0.tar.bz2
+          cd valgrind-3.21.0
+          ./configure
+          make
+          make install
+          cd $GITHUB_WORKSPACE
+          ci-extra/test-valgrind.sh
 
       - if: ${{ matrix.build_type == 'Release' }}
         name: Integration tests

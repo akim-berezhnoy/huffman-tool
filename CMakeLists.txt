@@ -44,7 +44,7 @@ endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   message(STATUS "Enabling libc++...")
-  add_compile_options(-stdlib=libc++)
+  add_compile_options(-gdwarf-5 -stdlib=libc++)
   add_link_options(-stdlib=libc++)
 endif()
 
@@ -52,3 +52,4 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
   message(STATUS "Enabling _GLIBCXX_DEBUG...")
   add_compile_options(-D_GLIBCXX_DEBUG)
 endif()
+
