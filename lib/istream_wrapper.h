@@ -2,6 +2,8 @@
 
 #include "codeword.h"
 
+#include <cassert>
+
 using std::istream;
 using std::pair;
 
