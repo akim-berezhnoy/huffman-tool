@@ -24,7 +24,7 @@ struct istream_wrapper {
   };
 
   uchar peek(size_t n) {
-    assert(n <= CHAR_BIT);
+    assert(n <= UCHAR_BIT);
     if (_occupied < n) {
       _buffer.second = next();
       _buffer.first |= _buffer.second >> _occupied;

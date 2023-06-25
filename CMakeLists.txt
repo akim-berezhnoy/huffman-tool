@@ -6,9 +6,21 @@ project(huffman)
 
 set(CMAKE_CXX_STANDARD 20)
 
+# Project
+
 add_subdirectory(lib)
 add_subdirectory(huffman-tool)
 add_subdirectory(unit-tests)
+
+# Tests
+#find_package(GTest REQUIRED)
+#
+#file(GLOB TEST_SRC unit-tests/*.cpp)
+#add_executable(tests ${TEST_SRC})
+#
+#target_include_directories(tests PRIVATE lib unit-tests)
+#
+#target_link_libraries(tests GTest::gtest GTest::gtest_main)
 
 if(MSVC)
   add_compile_options(/W4 /permissive-)
