@@ -22,4 +22,3 @@ static void test_encode_decode(ss& initial) {
     decode(encoded, initial);
   }
 }
-

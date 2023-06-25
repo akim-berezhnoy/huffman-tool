@@ -25,4 +25,3 @@ private:
   const T& stream_after_cycle;
   T initial_stream;
 };
-

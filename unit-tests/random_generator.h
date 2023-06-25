@@ -43,5 +43,3 @@ public:
     return static_cast<char>(e_char());
   }
 };
-
-
