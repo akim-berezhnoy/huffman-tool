@@ -1,6 +1,7 @@
 #pragma once
 
 #include <istream>
+#include <limits>
 #include <utility>
 
 namespace {

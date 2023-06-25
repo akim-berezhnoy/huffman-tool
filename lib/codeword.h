@@ -3,6 +3,8 @@
 #include "constants.h"
 #include "ostream_wrapper.h"
 
+#include <vector>
+
 using std::vector;
 
 struct codeword {
