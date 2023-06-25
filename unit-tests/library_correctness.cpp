@@ -8,6 +8,8 @@
 
 class library_correctness : public testing::Test {};
 
+static constexpr size_t iterations = 100;
+
 static void pass_bits_to_ostream(ostream_wrapper& ow, uchar ch, size_t bits) {
   size_t done = 0;
   while (done != UCHAR_BIT) {
@@ -28,7 +30,7 @@ static uchar pass_bits_from_istream(istream_wrapper& iw, size_t bits) {
 
 TEST(library_correctness, istream_wrapper) {
   size_t bits = 1;
-  test_multiple_times([&]() {
+  for (size_t i = iterations; i > 0; --i) {
     for (size_t letters = 1; letters < 300; ++letters) {
       ss in(letters, ss::mode::english);
       istream_wrapper iw(in);
@@ -39,12 +41,12 @@ TEST(library_correctness, istream_wrapper) {
       ASSERT_EQ(in, out);
       in.clear();
     }
-  });
+  }
 }
 
 TEST(library_correctness, ostream_wrapper) {
   size_t bits = 1;
-  test_multiple_times([&]() {
+  for (size_t i = iterations; i > 0; --i) {
     for (size_t letters = 1; letters < 300; ++letters) {
       ss in(letters);
       ss out;
@@ -55,11 +57,11 @@ TEST(library_correctness, ostream_wrapper) {
       }
       ASSERT_EQ(in, out);
     }
-  });
+  }
 }
 
 TEST(library_correctness, codeword) {
-  test_multiple_times([]() {
+  for (size_t i = iterations; i > 0; --i) {
     ss s;
     ostream_wrapper ow(s.ios);
     for (size_t letters = 1; letters < 300; ++letters) {
@@ -75,5 +77,5 @@ TEST(library_correctness, codeword) {
       ASSERT_EQ(s, s_cw);
       s.clear();
     }
-  });
+  }
 }

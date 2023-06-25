@@ -1,6 +1,5 @@
 #pragma once
 
-#include "coder.h"
 #include "codeword.h"
 #include "huffman_tree.h"
 #include "istream_wrapper.h"
@@ -19,9 +18,13 @@ using std::istream;
 using std::ostream;
 using std::pair;
 
-class encoder : coder {
+class encoder {
 
-  size_t* frequencies = letter_info;
+  size_t file_length{};
+  size_t frequencies[UCHAR_STATES]{};
+  codeword codewords[UCHAR_STATES]{};
+
+  uchar letter = 0;
 
   encoder() = default;
 
@@ -35,10 +38,12 @@ class encoder : coder {
       return;
     }
     std::priority_queue<node*, std::vector<node*>, node_comparer> nodes;
-    for_all_letters([this, &nodes](uchar l) {
-      node* letter = new leaf(l, frequencies[l]);
-      nodes.push(letter);
-    });
+    do {
+      if (frequencies[letter]) {
+        node* l = new leaf(letter, frequencies[letter]);
+        nodes.push(l);
+      }
+    } while (++letter != 0);
     if (nodes.size() == 1) {
       codewords[static_cast<leaf*>(nodes.top())->_value].code.push_back(false);
     } else {
@@ -64,10 +69,22 @@ class encoder : coder {
       return;
     }
     ow.write_number(file_length);
-    for_all_letters([this, &ow](uchar l) { ow.write(l); });
+    do {
+      if (frequencies[letter]) {
+        ow.write(letter);
+      }
+    } while (++letter != 0);
     ow.write('\0');
-    for_all_letters([this, &ow](uchar l) { ow.write(static_cast<uchar>(codewords[l].code.size())); });
-    for_all_letters([this, &ow](uchar l) { ow << codewords[l]; });
+    do {
+      if (frequencies[letter]) {
+        ow.write(static_cast<uchar>(codewords[letter].code.size()));
+      }
+    } while (++letter != 0);
+    do {
+      if (frequencies[letter]) {
+        ow << codewords[letter];
+      }
+    } while (++letter != 0);
     auto iw = istream_wrapper(is);
     while (!iw.exhausted()) {
       ow << codewords[iw.read()];

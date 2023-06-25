@@ -16,6 +16,8 @@ static const vector<size_t> stream_sizes = {1, 2, 3, 10, 30, 50, 100, 1000, 1000
 
 using mode = ss::mode;
 
+static constexpr size_t iterations = 100;
+
 TEST(stream_compression_correctness, empty_file) {
   ss initial;
   test_encode_decode(initial);
@@ -33,27 +35,27 @@ TEST(stream_compression_correctness, file_with_only_one_type_of_letter) {
 
 TEST(stream_compression_correctness, english_charset) {
   for (size_t size : stream_sizes) {
-    test_multiple_times([&]() {
+    for (size_t i = iterations; i > 0; --i) {
       ss initial(size, mode::english);
       test_encode_decode(initial);
-    });
+    }
   }
 }
 
 TEST(stream_compression_correctness, cpp_charset) {
   for (size_t size : stream_sizes) {
-    test_multiple_times([&]() {
+    for (size_t i = iterations; i > 0; --i) {
       ss initial(size, mode::code);
       test_encode_decode(initial);
-    });
+    }
   }
 }
 
 TEST(stream_compression_correctness, random_charset) {
   for (size_t size : stream_sizes) {
-    test_multiple_times([&]() {
+    for (size_t i = iterations; i > 0; --i) {
       ss initial(size, mode::random);
       test_encode_decode(initial);
-    });
+    }
   }
 }
