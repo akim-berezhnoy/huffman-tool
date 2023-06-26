@@ -45,7 +45,10 @@ class encoder {
       }
     } while (++letter != 0);
     if (nodes.size() == 1) {
-      codewords[static_cast<leaf*>(nodes.top())->_value].code.push_back(false);
+      leaf* unique_leaf = static_cast<leaf*>(nodes.top());
+      nodes.pop();
+      codewords[unique_leaf->_value].code.push_back(false);
+      delete unique_leaf;
     } else {
       while (nodes.size() > 1) {
         node* first = nodes.top();
@@ -55,6 +58,7 @@ class encoder {
         nodes.push(new node(first, second));
       }
       node* root = nodes.top();
+      nodes.pop();
       vector<bool> init;
       build_huffman_tree(root, init);
       leaf::destroy_tree(nodes.top());

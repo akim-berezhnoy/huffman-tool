@@ -16,7 +16,7 @@ static const vector<size_t> stream_sizes = {1, 2, 3, 10, 30, 50, 100, 1000, 1000
 
 using mode = ss::mode;
 
-static constexpr size_t iterations = 1;
+static constexpr size_t iterations = 100;
 
 TEST(stream_compression_correctness, empty_file) {
   ss initial;
