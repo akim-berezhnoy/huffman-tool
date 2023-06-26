@@ -1,6 +1,5 @@
 #pragma once
 
-#include "coder.h"
 #include "codeword.h"
 #include "constants.h"
 #include "huffman_tree.h"
@@ -13,9 +12,13 @@
 
 using std::vector;
 
-class decoder : coder {
+class decoder {
 
-  size_t* codewords_lengths = letter_info;
+  size_t file_length{};
+  size_t codewords_lengths[UCHAR_STATES]{};
+  codeword codewords[UCHAR_STATES]{};
+
+  uchar letter = 0;
 
   node huffman_root{};
 
@@ -33,16 +36,34 @@ class decoder : coder {
       codewords_lengths[ch] = true;
       ch = iw.read();
     } while (ch != '\0');
-    forall_letters([this, &iw](uchar l) { codewords_lengths[l] = iw.read(); });
-    forall_letters([this, &iw](uchar l) { codewords[l] = iw.read_codeword(codewords_lengths[l]); });
+    do {
+      if (codewords_lengths[letter]) {
+        codewords_lengths[letter] = iw.read();
+      }
+    } while (++letter != 0);
+    size_t unique_letters_cnt = 0;
+    uchar unique_letter = 0;
+    do {
+      if (codewords_lengths[letter]) {
+        codewords[letter] = iw.read_codeword(codewords_lengths[letter]);
+        ++unique_letters_cnt;
+        unique_letter = letter;
+      }
+    } while (++letter != 0);
     auto ow = ostream_wrapper(os);
-    build_huffman_tree();
-    for (size_t i = 0; i < file_length; ++i) {
-      uchar letter = parse_letter(&huffman_root, iw);
-      ow.write(letter);
+    if (unique_letters_cnt == 1) {
+      for (size_t i = 0; i < file_length; ++i) {
+        ow.write(unique_letter);
+      }
+    } else {
+      build_huffman_tree();
+      for (size_t i = 0; i < file_length; ++i) {
+        uchar letter = parse_letter(&huffman_root, iw);
+        ow.write(letter);
+      }
+      leaf::destroy_tree(huffman_root._left_child);
+      leaf::destroy_tree(huffman_root._right_child);
     }
-    leaf::destroy_tree(huffman_root._left_child);
-    leaf::destroy_tree(huffman_root._right_child);
   }
 
   uchar parse_letter(node* current, istream_wrapper& iw) {
@@ -62,7 +83,11 @@ class decoder : coder {
   }
 
   void build_huffman_tree() {
-    forall_letters([this](uchar l) { build_branch(codewords[l].code, l); });
+    do {
+      if (codewords_lengths[letter]) {
+        build_branch(codewords[letter].code, letter);
+      }
+    } while (++letter != 0);
   }
 
   void build_branch(vector<bool>& code, uchar letter) {
