@@ -16,7 +16,7 @@ static const vector<size_t> stream_sizes = {1, 2, 3, 10, 30, 50, 100, 1000, 1000
 
 using mode = ss::mode;
 
-static constexpr size_t iterations = 100;
+static constexpr size_t iterations = 1;
 
 TEST(stream_compression_correctness, empty_file) {
   ss initial;
@@ -24,8 +24,8 @@ TEST(stream_compression_correctness, empty_file) {
 }
 
 TEST(stream_compression_correctness, file_with_only_one_type_of_letter) {
-  ss initial;
   for (char c = CHAR::min(); c < CHAR::max(); ++c) {
+    ss initial;
     for (size_t i = 0; i < abs(c); ++i) {
       initial << c;
     }

@@ -41,16 +41,28 @@ class decoder {
         codewords_lengths[letter] = iw.read();
       }
     } while (++letter != 0);
+    size_t unique_letters_cnt = 0;
+    uchar unique_letter = 0;
     do {
       if (codewords_lengths[letter]) {
         codewords[letter] = iw.read_codeword(codewords_lengths[letter]);
+        ++unique_letters_cnt;
+        unique_letter = letter;
       }
     } while (++letter != 0);
-    build_huffman_tree();
     auto ow = ostream_wrapper(os);
-    for (size_t i = 0; i < file_length; ++i) {
-      uchar letter = parse_letter(&huffman_root, iw);
-      ow.write(letter);
+    if (unique_letters_cnt == 1) {
+      for (size_t i = 0; i < file_length; ++i) {
+        ow.write(unique_letter);
+      }
+    } else {
+      build_huffman_tree();
+      for (size_t i = 0; i < file_length; ++i) {
+        uchar letter = parse_letter(&huffman_root, iw);
+        ow.write(letter);
+      }
+      leaf::destroy_tree(huffman_root._left_child);
+      leaf::destroy_tree(huffman_root._right_child);
     }
   }
 
@@ -84,7 +96,7 @@ class decoder {
     code.pop_back();
     for (bool bit : code) {
       node*& bound = bit ? current->_right_child : current->_left_child;
-      if (!bound) {
+      if (bound == nullptr) {
         bound = new node();
       }
       current = bound;
