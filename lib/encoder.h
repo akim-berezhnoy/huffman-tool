@@ -18,13 +18,9 @@ using std::istream;
 using std::ostream;
 using std::pair;
 
-class encoder {
+class encoder : coder {
 
-  size_t file_length{};
-  size_t frequencies[UCHAR_STATES]{};
-  codeword codewords[UCHAR_STATES]{};
-
-  uchar letter = 0;
+  size_t* frequencies = letter_info;
 
   encoder() = default;
 
@@ -38,15 +34,12 @@ class encoder {
       return;
     }
     std::priority_queue<node*, std::vector<node*>, node_comparer> nodes;
-    do {
-      if (frequencies[letter]) {
-        node* l = new leaf(letter, frequencies[letter]);
-        nodes.push(l);
-      }
-    } while (++letter != 0);
+    forall_letters([this, &nodes](uchar l) {
+      node* letter = new leaf(l, frequencies[l]);
+      nodes.push(letter);
+    });
     if (nodes.size() == 1) {
       leaf* unique_leaf = static_cast<leaf*>(nodes.top());
-      nodes.pop();
       codewords[unique_leaf->_value].code.push_back(false);
       delete unique_leaf;
     } else {
@@ -58,12 +51,10 @@ class encoder {
         nodes.push(new node(first, second));
       }
       node* root = nodes.top();
-      nodes.pop();
       vector<bool> init;
       build_huffman_tree(root, init);
-      leaf::destroy_tree(nodes.top());
+      leaf::destroy_tree(root);
     }
-    nodes.pop();
   }
 
   void encode(istream& is, ostream& os) {
@@ -73,22 +64,10 @@ class encoder {
       return;
     }
     ow.write_number(file_length);
-    do {
-      if (frequencies[letter]) {
-        ow.write(letter);
-      }
-    } while (++letter != 0);
+    forall_letters([&ow](uchar l) { ow.write(l); });
     ow.write('\0');
-    do {
-      if (frequencies[letter]) {
-        ow.write(static_cast<uchar>(codewords[letter].code.size()));
-      }
-    } while (++letter != 0);
-    do {
-      if (frequencies[letter]) {
-        ow << codewords[letter];
-      }
-    } while (++letter != 0);
+    forall_letters([this, &ow](uchar l) { ow.write(static_cast<uchar>(codewords[l].code.size())); });
+    forall_letters([this, &ow](uchar l) { ow << codewords[l]; });
     auto iw = istream_wrapper(is);
     while (!iw.exhausted()) {
       ow << codewords[iw.read()];
