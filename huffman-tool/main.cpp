@@ -1,7 +1,9 @@
-#include "encoding-decoding.h"
+#include "decoder.h"
+#include "encoder.h"
 
 #include <boost/program_options.hpp>
 
+#include <cerrno>
 #include <fstream>
 #include <iostream>
 
@@ -10,17 +12,21 @@ using std::ofstream;
 using std::pair;
 using std::string;
 
-template <typename T>
-void out(T arg) {
-  std::cout << '\n'
-            << arg << "\n\n"
+using namespace huffman;
+
+template <typename... Args>
+void out(const Args&... args) {
+  std::cout << '\n';
+  (std::cout << ... << args);
+  std::cout << "\n\n"
             << "Use --help flag to get utility functional info." << '\n';
 }
 
-template <typename T>
-void err(T arg) {
-  std::cerr << '\n'
-            << arg << "\n\n"
+template <typename... Args>
+void err(const Args&... args) {
+  std::cerr << '\n';
+  (std::cerr << ... << args);
+  std::cerr << "\n\n"
             << "Use --help flag to get utility functional info." << '\n';
 }
 
@@ -28,9 +34,13 @@ namespace po = boost::program_options;
 
 pair<po::options_description, po::variables_map> configure_program_options(int argc, char** argv) {
   po::options_description desc("Allowed options");
-  desc.add_options()("compress", "compress input file")("decompress", "decompress input file")(
-      "input", po::value<string>(), "specify input file path")(
-      "output", po::value<string>(), "specify output file path")("help", "show utility functional");
+  desc.add_options()                                              //
+      ("compress", "compress input file")                         //
+      ("decompress", "decompress input file")                     //
+      ("input", po::value<string>(), "specify input file path")   //
+      ("output", po::value<string>(), "specify output file path") //
+      ("help", "show utility functional");                        //
+
   po::positional_options_description pos_opt_desc;
   po::variables_map cmd_options;
   try {
@@ -44,8 +54,8 @@ pair<po::options_description, po::variables_map> configure_program_options(int a
 }
 
 enum class mode {
-  compression,
-  decompression
+  COMPRESSION,
+  DECOMPRESSION
 };
 
 int main(int argc, char** argv) {
@@ -63,9 +73,9 @@ int main(int argc, char** argv) {
     err("Program mode (flags --compress/--decompress) was defined twice. Unexpected argument pack.");
     return 1;
   } else if (cmd_opts.contains("compress")) {
-    program_mode = mode::compression;
+    program_mode = mode::COMPRESSION;
   } else if (cmd_opts.contains("decompress")) {
-    program_mode = mode::decompression;
+    program_mode = mode::DECOMPRESSION;
   } else {
     err("Program mode (flags --compress/--decompress) was not defined.");
     return 1;
@@ -93,33 +103,36 @@ int main(int argc, char** argv) {
     ifstream input_file(input_file_path, std::ios::binary);
 
     if (input_file.fail()) {
-      err("Error occurred: failed to open " + input_file_path);
-      return 1;
+      err("Error occurred: failed to open ", input_file_path);
+      return EIO;
     }
 
-    input_file.exceptions(std::ifstream::failbit);
+    input_file.exceptions(std::ifstream::goodbit);
 
     ofstream output_file(output_file_path, std::ios::binary);
 
     if (output_file.fail()) {
-      err("Error occurred: failed to open " + output_file_path);
+      err("Error occurred: failed to open ", output_file_path);
       input_file.close();
-      return 1;
+      return EIO;
     }
 
-    output_file.exceptions(std::ifstream::failbit);
+    output_file.exceptions(std::ifstream::goodbit);
 
-    if (program_mode == mode::compression) {
+    if (program_mode == mode::COMPRESSION) {
       encode(input_file, output_file);
     } else {
       decode(input_file, output_file);
     }
 
-    input_file.close();
-    output_file.close();
+    // input_file.close();
+    // output_file.close();
 
   } catch (const std::exception& e) {
     err(e.what());
-    exit(2);
+    return 2;
+  } catch (...) {
+    err("Unexpected error happened");
+    return 2;
   }
 }

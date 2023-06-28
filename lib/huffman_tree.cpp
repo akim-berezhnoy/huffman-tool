@@ -1,30 +1,32 @@
-#include <bits/stdc++.h>
+#include "huffman_tree.h"
 
-using std::cin;
-using std::cout;
-using std::cerr;
-using std::endl;
+#include "constants.h"
 
-using i32 = int_fast32_t;
-using u32 = uint_fast32_t;
-using i64 = int_fast64_t;
-using u64 = uint_fast64_t;
-using usize = size_t;
+#include <memory>
 
-using namespace std;
+namespace huffman {
 
-__attribute__((constructor))
-void fast_io() {
-    std::ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
-    cerr.tie(nullptr);
+using unode = std::unique_ptr<node>;
+
+node::node() : _weight(0), _left_child(nullptr), _right_child(nullptr) {}
+
+node::node(size_t weight, uchar value) : _weight(weight), _value(value) {}
+
+node::node(unode&& left_child, unode&& right_child)
+    : _weight(left_child->_weight + right_child->_weight),
+      _left_child(left_child.release()),
+      _right_child(right_child.release()) {}
+
+bool node::is_leaf() const {
+  return _left_child == nullptr && _right_child == nullptr;
 }
 
-void solution() {
-    
+bool node_comparer::operator()(const std::unique_ptr<node>& a, const std::unique_ptr<node>& b) {
+  return a->_weight > b->_weight;
 }
 
-int main() {
-    solution();
+bool node_comparer::operator()(const node* a, const node* b) {
+  return a->_weight > b->_weight;
 }
+
+} // namespace huffman

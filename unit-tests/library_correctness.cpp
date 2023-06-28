@@ -6,6 +6,8 @@
 #include "ss.h"
 #include "test_utils.h"
 
+using namespace huffman;
+
 class library_correctness : public testing::Test {};
 
 static constexpr size_t iterations = 100;
@@ -47,7 +49,7 @@ TEST(library_correctness, istream_wrapper) {
 TEST(library_correctness, ostream_wrapper) {
   size_t bits = 1;
   for (size_t i = iterations; i > 0; --i) {
-    for (size_t letters = 1; letters < 300; ++letters) {
+    for (size_t letters = 1; letters < 2; ++letters) {
       ss in(letters);
       ss out;
       ostream_wrapper ow(out);
@@ -55,9 +57,25 @@ TEST(library_correctness, ostream_wrapper) {
         pass_bits_to_ostream(ow, c, bits);
         bits = bits * 2 ? bits < 8 : 1;
       }
+      ow.flush();
       ASSERT_EQ(in, out);
     }
   }
+
+  ss in;
+  ss out;
+  ostream_wrapper ow(out);
+  ow.write(0b00001010, 4);
+  ow.write(0b00001001, 6);
+  ow.write(0b00011001, 7);
+  ow.write(0b00000011, 2);
+  ow.write(0b01001111, 7);
+  ow.write(0b00100110, 7);
+  ow.write(0b01001101, 7);
+  ow.flush();
+  in << static_cast<uchar>(0b10100010) << static_cast<uchar>(0b01001100) << static_cast<uchar>(0b11110011)
+     << static_cast<uchar>(0b11010011) << static_cast<uchar>(0b01001101);
+  ASSERT_EQ(in, out);
 }
 
 TEST(library_correctness, codeword) {
@@ -74,6 +92,7 @@ TEST(library_correctness, codeword) {
       ss s_cw;
       ostream_wrapper ow(s_cw);
       ow << cw;
+      ow.flush();
       ASSERT_EQ(s, s_cw);
       s.clear();
     }

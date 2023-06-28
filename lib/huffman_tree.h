@@ -2,43 +2,35 @@
 
 #include "constants.h"
 
+#include <memory>
+
+namespace huffman {
+
 struct node {
 
+  using unode = std::unique_ptr<node>;
+
   size_t _weight{};
-  node* _left_child{};
-  node* _right_child{};
+  uchar _value{};
+  unode _left_child{};
+  unode _right_child{};
 
-  node() : _weight(0), _left_child(nullptr), _right_child(nullptr) {}
+  node();
 
-  explicit node(size_t weight) : _weight(weight) {}
+  node(size_t weight, uchar value);
 
-  node(node* left_child, node* right_child)
-      : _weight(left_child->_weight + right_child->_weight),
-        _left_child(left_child),
-        _right_child(right_child) {}
+  explicit node(uchar value) : node(0, value) {}
 
-  bool is_leaf() {
-    return _left_child == nullptr && _right_child == nullptr;
-  }
+  node(unode&& left_child, unode&& right_child);
+
+  bool is_leaf() const;
 };
 
-struct leaf : node {
-  uchar _value;
+struct node_comparer {
 
-  explicit leaf(const uchar& value) : leaf(value, 0) {}
+  bool operator()(const std::unique_ptr<node>& a, const std::unique_ptr<node>& b);
 
-  leaf(uchar value, size_t weight) : node(weight), _value(value) {}
-
-  static void destroy_tree(node* current) noexcept {
-    if (current == nullptr) {
-      return;
-    }
-    if (current->is_leaf()) {
-      delete static_cast<leaf*>(current);
-    } else {
-      destroy_tree(current->_left_child);
-      destroy_tree(current->_right_child);
-      delete current;
-    }
-  }
+  bool operator()(const node* a, const node* b);
 };
+
+} // namespace huffman

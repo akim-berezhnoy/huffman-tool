@@ -1,4 +1,5 @@
-#include "encoding-decoding.h"
+#include "decoder.h"
+#include "encoder.h"
 #include "ss.h"
 #include "test_utils.h"
 
@@ -15,6 +16,8 @@ using CHAR = std::numeric_limits<char>;
 static const vector<size_t> stream_sizes = {1, 2, 3, 10, 30, 50, 100, 1000, 10000, 100000};
 
 using mode = ss::mode;
+
+using namespace huffman;
 
 static constexpr size_t iterations = 100;
 

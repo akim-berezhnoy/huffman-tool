@@ -1,9 +1,12 @@
 #pragma once
 
 #include "cctype"
-#include "encoding-decoding.h"
+#include "decoder.h"
+#include "encoder.h"
 #include "guard.h"
 #include "ss.h"
+
+using namespace huffman;
 
 static void test_encode_decode(ss& initial) {
   {

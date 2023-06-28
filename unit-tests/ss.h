@@ -56,6 +56,8 @@ public:
 
   void clear() {
     ios.str("");
+    ios.seekg(0);
+    ios.clear();
   }
 
   friend bool operator==(const ss& a, const ss& b) {

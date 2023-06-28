@@ -7,27 +7,25 @@
 
 using std::vector;
 
+namespace huffman {
+
 struct codeword {
 
   vector<bool> code;
 
-  codeword() = default;
+  codeword();
 
-  explicit codeword(const vector<bool>& vec) : code(vec) {}
+  explicit codeword(const vector<bool>& vec);
 
-  friend void operator<<(ostream_wrapper& out, codeword& cw) {
-    for (bool bit : cw.code) {
-      out.write(bit, 1);
-    }
-  }
+  friend ostream_wrapper& operator<<(ostream_wrapper& out, codeword& cw);
 
-  friend void operator<<(codeword& out, bool bit) {
-    out.code.push_back(bit);
-  }
+  friend codeword& operator<<(codeword& out, bool bit);
 
-  friend void operator<<(codeword& out, uchar letter) {
-    for (size_t i = 1; i <= UCHAR_BIT; ++i) {
-      out.code.push_back((letter >> (UCHAR_BIT - i)) & 1);
-    }
-  }
+  friend codeword& operator<<(codeword& out, uchar letter);
 };
+
+ostream_wrapper& operator<<(ostream_wrapper& out, codeword& cw);
+codeword& operator<<(codeword& out, bool bit);
+codeword& operator<<(codeword& out, uchar letter);
+
+} // namespace huffman
