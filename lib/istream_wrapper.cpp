@@ -58,14 +58,14 @@ codeword istream_wrapper::read_codeword(size_t length) {
 
 size_t istream_wrapper::read_number() {
   size_t ret = 0;
-  for (size_t i = 4; i-- > 0;) {
+  for (size_t i = sizeof(size_t); i-- > 0;) {
     ret |= static_cast<size_t>(read_letter()) << (i * UCHAR_BIT);
   }
   return ret;
 }
 
 bool istream_wrapper::exhausted() const noexcept {
-  return (_occupied == 0) && reached_end_of_buffer();
+  return (!_occupied) && reached_end_of_buffer();
 }
 
 } // namespace huffman

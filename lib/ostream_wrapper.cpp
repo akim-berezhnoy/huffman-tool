@@ -55,7 +55,7 @@ void ostream_wrapper::write(uchar ch) {
 }
 
 void ostream_wrapper::write_number(size_t number) {
-  for (size_t i = 4; i-- > 0;) {
+  for (size_t i = sizeof(size_t); i-- > 0;) {
     write(number >> (i * UCHAR_BIT));
   }
 }

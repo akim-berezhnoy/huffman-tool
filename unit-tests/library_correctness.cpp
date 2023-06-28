@@ -50,7 +50,7 @@ TEST(library_correctness, istream_wrapper) {
 TEST(library_correctness, ostream_wrapper) {
   size_t bits = 1;
   for (size_t i = iterations; i > 0; --i) {
-    for (size_t letters = 1; letters < 2; ++letters) {
+    for (size_t letters = 1; letters < 300; ++letters) {
       ss in(letters);
       ss out;
       ostream_wrapper ow(out);

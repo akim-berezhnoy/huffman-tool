@@ -18,7 +18,7 @@ node::node(unode&& left_child, unode&& right_child)
       _right_child(right_child.release()) {}
 
 bool node::is_leaf() const {
-  return _left_child == nullptr && _right_child == nullptr;
+  return !(_left_child || _right_child);
 }
 
 bool node_comparer::operator()(const std::unique_ptr<node>& a, const std::unique_ptr<node>& b) {

@@ -7,8 +7,10 @@
 #include "ostream_wrapper.h"
 
 #include <istream>
+#include <set>
 #include <vector>
 
+using std::set;
 using std::vector;
 
 namespace huffman {
@@ -20,6 +22,7 @@ class decoder {
   size_t file_length{};
   size_t codewords_lengths[UCHAR_STATES]{};
   codeword codewords[UCHAR_STATES]{};
+  set<uchar> used_letters{};
 
   uchar letter = 0;
 
