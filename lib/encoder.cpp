@@ -26,7 +26,7 @@ void encoder::prepare_encoding(istream& is) {
   auto iw = istream_wrapper(is);
   while (!iw.exhausted()) {
     ++file_length;
-    ++frequencies[iw.read()];
+    ++frequencies[iw.read_letter()];
   }
   if (file_length == 0) {
     return;
@@ -80,7 +80,7 @@ void encoder::encode(istream& is, ostream& os) {
   } while (++letter != 0);
   auto iw = istream_wrapper(is);
   while (!iw.exhausted()) {
-    ow << codewords[iw.read()];
+    ow << codewords[iw.read_letter()];
   }
 }
 

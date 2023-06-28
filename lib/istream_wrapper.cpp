@@ -26,40 +26,32 @@ uchar istream_wrapper::next_char() {
   return ret;
 }
 
-uchar istream_wrapper::peek(size_t n) {
-  assert(n <= UCHAR_BIT);
-  if (_occupied < n) {
-    _buffer.second = next_char();
-    _buffer.first |= _buffer.second >> _occupied;
-    _buffer.second <<= UCHAR_BIT - _occupied;
-    _occupied += UCHAR_BIT;
+bool istream_wrapper::read_bit() {
+  if (!_occupied) {
+    _buffer = next_char();
+    _occupied = UCHAR_BIT;
   }
-  return _buffer.first >> (UCHAR_BIT - n);
-}
-
-uchar istream_wrapper::read(size_t n) {
-  uchar ret = peek(n);
-  _buffer.first <<= n;
-  if (_buffer.second) {
-    _buffer.first |= _buffer.second >> (UCHAR_BIT - n);
-    _buffer.second <<= n;
-  }
-  _occupied -= n;
+  uchar ret = _buffer >> (UCHAR_BIT - 1);
+  _buffer <<= 1;
+  --_occupied;
   return ret;
 }
 
-uchar istream_wrapper::read() {
-  return read(UCHAR_BIT);
+uchar istream_wrapper::read_letter() {
+  uchar next = next_char();
+  uchar ret = _buffer | (next >> _occupied);
+  _buffer = next << (UCHAR_BIT - _occupied);
+  return ret;
 }
 
 codeword istream_wrapper::read_codeword(size_t length) {
   codeword c;
   while (length > UCHAR_BIT) {
-    c << read();
+    c << read_letter();
     length -= UCHAR_BIT;
   }
   while (length-- > 0) {
-    c << static_cast<bool>(read(1));
+    c << read_bit();
   }
   return c;
 };
@@ -67,7 +59,7 @@ codeword istream_wrapper::read_codeword(size_t length) {
 size_t istream_wrapper::read_number() {
   size_t ret = 0;
   for (size_t i = 4; i-- > 0;) {
-    ret |= static_cast<size_t>(read()) << (i * UCHAR_BIT);
+    ret |= static_cast<size_t>(read_letter()) << (i * UCHAR_BIT);
   }
   return ret;
 }

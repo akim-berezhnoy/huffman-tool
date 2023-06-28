@@ -20,14 +20,14 @@ void decoder::decode(istream& is, ostream& os) {
   if (file_length == 0) {
     return;
   }
-  uchar ch = iw.read();
+  uchar ch = iw.read_letter();
   do {
     codewords_lengths[ch] = true;
-    ch = iw.read();
+    ch = iw.read_letter();
   } while (ch != '\0');
   do {
     if (codewords_lengths[letter]) {
-      codewords_lengths[letter] = iw.read();
+      codewords_lengths[letter] = iw.read_letter();
     }
   } while (++letter != 0);
   size_t unique_letters_cnt = 0;
@@ -58,7 +58,7 @@ uchar decoder::parse_letter(node* current, istream_wrapper& iw) {
     if (current->is_leaf()) {
       return current->_value;
     } else {
-      bool bit = iw.read(1);
+      bool bit = iw.read_bit();
       if (bit) {
         current = current->_right_child.get();
       } else {

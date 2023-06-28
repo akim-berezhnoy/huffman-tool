@@ -12,7 +12,7 @@ namespace huffman {
 class istream_wrapper {
 
   istream& _is;
-  buffer _buffer{};
+  uchar _buffer{};
   size_t _occupied{};
 
   // Added buffered reading
@@ -36,11 +36,9 @@ public:
     }
   };
 
-  uchar peek(size_t n);
+  bool read_bit();
 
-  uchar read(size_t n);
-
-  uchar read();
+  uchar read_letter();
 
   codeword read_codeword(size_t length);
 
