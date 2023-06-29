@@ -31,8 +31,8 @@ void encoder::prepare_encoding(istream& is) {
     if (frequencies[letter]) {
       nodes.push_back(std::make_unique<node>(frequencies[letter], letter));
     }
-    std::make_heap(nodes.begin(), nodes.end(), comp);
   } while (++letter != 0);
+  std::make_heap(nodes.begin(), nodes.end(), comp);
   if (nodes.size() == 1) {
     codewords[nodes.back()->_value].code.push_back(false);
   } else {
