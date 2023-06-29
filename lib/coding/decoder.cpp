@@ -98,4 +98,4 @@ void decode(istream& is, ostream& os) {
 
 void decode(istream& is, ostream& os);
 
-} // namespace huffman
+} // namespace huffman /
