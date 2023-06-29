@@ -1,6 +1,6 @@
 #include "ostream_wrapper.h"
 
-#include "constants.h"
+#include "utility/constants.h"
 
 #include <cassert>
 #include <cctype>
@@ -14,7 +14,7 @@ namespace huffman {
 void ostream_wrapper::write_next(uchar ch) {
   STREAM_BUFFER[STREAM_BUFFER_IT++] = static_cast<char>(ch);
   if (STREAM_BUFFER_IT == STREAM_BUFFER_SIZE) {
-    _os.write(STREAM_BUFFER, STREAM_BUFFER_IT);
+    _os.write(STREAM_BUFFER.data(), STREAM_BUFFER_IT);
     STREAM_BUFFER_IT = 0;
   }
 }
@@ -65,7 +65,7 @@ void ostream_wrapper::flush() {
     write_next(_buffer);
   }
   if (STREAM_BUFFER_IT != 0) {
-    _os.write(STREAM_BUFFER, STREAM_BUFFER_IT);
+    _os.write(STREAM_BUFFER.data(), STREAM_BUFFER_IT);
   }
   _os.flush();
 }

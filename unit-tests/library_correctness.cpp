@@ -1,10 +1,10 @@
-#include "codeword.h"
 #include "gtest/gtest.h"
-#include "istream_wrapper.h"
-#include "ostream_wrapper.h"
 #include "random_generator.h"
 #include "ss.h"
 #include "test_utils.h"
+#include "utility/codeword.h"
+#include "wrappers/istream_wrapper.h"
+#include "wrappers/ostream_wrapper.h"
 
 using namespace huffman;
 

@@ -1,32 +1,29 @@
 #pragma once
 
-#include "codeword.h"
-#include "constants.h"
-#include "huffman_tree.h"
-#include "istream_wrapper.h"
-#include "ostream_wrapper.h"
+#include "utility/codeword.h"
+#include "utility/constants.h"
+#include "utility/huffman_tree.h"
+#include "wrappers/istream_wrapper.h"
+#include "wrappers/ostream_wrapper.h"
 
 #include <istream>
 #include <set>
 #include <vector>
 
+using std::array;
 using std::set;
 using std::vector;
 
 namespace huffman {
 
 class decoder {
-
-  using unode = std::unique_ptr<node>;
+  node* huffman_root = nullptr;
+  std::vector<std::unique_ptr<node>> holder;
 
   size_t file_length{};
-  size_t codewords_lengths[UCHAR_STATES]{};
-  codeword codewords[UCHAR_STATES]{};
+  array<size_t, UCHAR_STATES> codewords_lengths{};
+  array<codeword, UCHAR_STATES> codewords{};
   set<uchar> used_letters{};
-
-  uchar letter = 0;
-
-  unode huffman_root = std::make_unique<node>();
 
   decoder();
 

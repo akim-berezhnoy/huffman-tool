@@ -1,8 +1,8 @@
 #pragma once
 
 #include "cctype"
-#include "decoder.h"
-#include "encoder.h"
+#include "coding/decoder.h"
+#include "coding/encoder.h"
 #include "guard.h"
 #include "ss.h"
 

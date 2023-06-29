@@ -1,9 +1,9 @@
 #include "decoder.h"
 
-#include "constants.h"
-#include "huffman_tree.h"
-#include "istream_wrapper.h"
-#include "ostream_wrapper.h"
+#include "utility/constants.h"
+#include "utility/huffman_tree.h"
+#include "wrappers/istream_wrapper.h"
+#include "wrappers/ostream_wrapper.h"
 
 #include <istream>
 #include <vector>
@@ -43,7 +43,7 @@ void decoder::decode(istream& is, ostream& os) {
   } else {
     build_huffman_tree();
     for (size_t i = 0; i < file_length; ++i) {
-      ow.write(parse_letter(huffman_root.get(), iw));
+      ow.write(parse_letter(huffman_root, iw));
     }
   }
 }
@@ -53,9 +53,9 @@ uchar decoder::parse_letter(node* current, istream_wrapper& iw) {
     if (!current->is_leaf()) {
       bool bit = iw.read_bit();
       if (bit) {
-        current = current->_right_child.get();
+        current = current->_right_child;
       } else {
-        current = current->_left_child.get();
+        current = current->_left_child;
       }
     } else {
       return current->_value;
@@ -64,26 +64,30 @@ uchar decoder::parse_letter(node* current, istream_wrapper& iw) {
 }
 
 void decoder::build_huffman_tree() {
+  holder.push_back(std::make_unique<node>());
+  huffman_root = holder.back().get();
   for (uchar c : used_letters) {
     build_branch(codewords[c].code, c);
   }
 }
 
 void decoder::build_branch(vector<bool>& code, uchar letter) {
-  node* current = huffman_root.get();
+  node* current = huffman_root; // todo init before
   bool last_bit = code.back();
   code.pop_back();
   for (bool bit : code) {
-    unode& bound = bit ? current->_right_child : current->_left_child;
-    if (!bound.get()) {
-      bound = std::make_unique<node>();
+    node*& bound = bit ? current->_right_child : current->_left_child;
+    if (bound == nullptr) {
+      holder.push_back(std::make_unique<node>());
+      bound = holder.back().get();
     }
-    current = bound.get();
+    current = bound;
   }
+  holder.push_back(std::make_unique<node>(letter));
   if (last_bit) {
-    current->_right_child = std::make_unique<node>(letter);
+    current->_right_child = holder.back().get();
   } else {
-    current->_left_child = std::make_unique<node>(letter);
+    current->_left_child = holder.back().get();
   }
 }
 

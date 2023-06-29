@@ -1,5 +1,5 @@
-#include "decoder.h"
-#include "encoder.h"
+#include "coding/decoder.h"
+#include "coding/encoder.h"
 
 #include <boost/program_options.hpp>
 

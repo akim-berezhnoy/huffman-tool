@@ -1,26 +1,19 @@
 #include "encoder.h"
 
-#include "codeword.h"
-#include "huffman_tree.h"
-#include "istream_wrapper.h"
-#include "ostream_wrapper.h"
+#include "utility/codeword.h"
+#include "utility/huffman_tree.h"
+#include "wrappers/istream_wrapper.h"
+#include "wrappers/ostream_wrapper.h"
 
-#include <queue>
-
-#include <iostream>
-#include <limits>
 #include <utility>
 #include <vector>
 
 using std::istream;
 using std::make_unique;
 using std::ostream;
-using std::pair;
 using std::unique_ptr;
 
 namespace huffman {
-
-using unode = std::unique_ptr<node>;
 
 void encoder::prepare_encoding(istream& is) {
   auto iw = istream_wrapper(is);
@@ -31,26 +24,33 @@ void encoder::prepare_encoding(istream& is) {
   if (file_length == 0) {
     return;
   }
-  std::priority_queue<unode, std::vector<unode>, node_comparer> nodes;
+  node_comparer comp{};
+  std::vector<std::unique_ptr<node>> nodes;
+  std::vector<std::unique_ptr<node>> holder;
   do {
     if (frequencies[letter]) {
-      nodes.push(make_unique<node>(frequencies[letter], letter));
+      nodes.push_back(std::make_unique<node>(frequencies[letter], letter));
     }
+    std::make_heap(nodes.begin(), nodes.end(), comp);
   } while (++letter != 0);
   if (nodes.size() == 1) {
-    unode unique_leaf = const_cast<unode&&>(nodes.top());
-    nodes.pop();
-    codewords[unique_leaf->_value].code.push_back(false);
+    codewords[nodes.back()->_value].code.push_back(false);
   } else {
     while (nodes.size() > 1) {
-      unode first = const_cast<unode&&>(nodes.top());
-      nodes.pop();
-      unode second = const_cast<unode&&>(nodes.top());
-      nodes.pop();
-      nodes.push(make_unique<node>(std::move(first), std::move(second)));
+      std::pop_heap(nodes.begin(), nodes.end(), comp);
+      holder.push_back(std::move(nodes.back()));
+      nodes.pop_back();
+      node* first = holder.back().get();
+
+      std::pop_heap(nodes.begin(), nodes.end(), comp);
+      holder.push_back(std::move(nodes.back()));
+      nodes.pop_back();
+      node* second = holder.back().get();
+
+      nodes.push_back(std::make_unique<node>(first, second));
+      std::push_heap(nodes.begin(), nodes.end(), comp);
     }
-    unode root = const_cast<unode&&>(nodes.top());
-    nodes.pop();
+    node* root = nodes.back().get();
     vector<bool> init;
     build_huffman_tree(root, init);
   }
@@ -84,7 +84,7 @@ void encoder::encode(istream& is, ostream& os) {
   }
 }
 
-void encoder::build_huffman_tree(unode& current, vector<bool>& code) {
+void encoder::build_huffman_tree(node* current, vector<bool>& code) {
   if (current->is_leaf()) {
     codewords[current->_value] = codeword(code);
   } else {
@@ -104,7 +104,5 @@ void encode(istream& is, ostream& os) {
   is.seekg(0);
   e.encode(is, os);
 }
-
-void encode(istream& is, ostream& os);
 
 } // namespace huffman

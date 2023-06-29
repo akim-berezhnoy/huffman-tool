@@ -1,6 +1,6 @@
 #pragma once
 
-#include "codeword.h"
+#include "utility/codeword.h"
 
 #include <cassert>
 
@@ -16,7 +16,7 @@ class istream_wrapper {
   size_t _occupied{};
 
   // Added buffered reading
-  char STREAM_BUFFER[STREAM_BUFFER_SIZE];
+  array<char, STREAM_BUFFER_SIZE> STREAM_BUFFER{};
   size_t STREAM_BUFFER_occupied = 0;
   size_t STREAM_BUFFER_iterator = 0;
 
@@ -26,7 +26,7 @@ class istream_wrapper {
 
 public:
   explicit istream_wrapper(istream& is) : _is(is) {
-    _is.read(STREAM_BUFFER, STREAM_BUFFER_SIZE);
+    _is.read(STREAM_BUFFER.data(), STREAM_BUFFER_SIZE);
     STREAM_BUFFER_occupied = _is.gcount();
   }
 

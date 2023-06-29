@@ -1,6 +1,6 @@
 #include "istream_wrapper.h"
 
-#include "codeword.h"
+#include "utility/codeword.h"
 
 #include <cassert>
 
@@ -19,7 +19,7 @@ uchar istream_wrapper::next_char() {
   }
   auto ret = static_cast<uchar>(STREAM_BUFFER[STREAM_BUFFER_iterator++]);
   if (reached_end_of_buffer()) {
-    _is.read(STREAM_BUFFER, STREAM_BUFFER_SIZE);
+    _is.read(STREAM_BUFFER.data(), STREAM_BUFFER_SIZE);
     STREAM_BUFFER_occupied = _is.gcount();
     STREAM_BUFFER_iterator = 0;
   }

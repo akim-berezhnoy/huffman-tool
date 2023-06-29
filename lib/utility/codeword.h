@@ -1,7 +1,7 @@
 #pragma once
 
 #include "constants.h"
-#include "ostream_wrapper.h"
+#include "wrappers/ostream_wrapper.h"
 
 #include <vector>
 

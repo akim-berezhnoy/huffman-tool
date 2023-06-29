@@ -8,12 +8,10 @@ namespace huffman {
 
 struct node {
 
-  using unode = std::unique_ptr<node>;
-
   size_t _weight{};
   uchar _value{};
-  unode _left_child{};
-  unode _right_child{};
+  node* _left_child = nullptr;
+  node* _right_child = nullptr;
 
   node();
 
@@ -21,9 +19,11 @@ struct node {
 
   explicit node(uchar value) : node(0, value) {}
 
-  node(unode&& left_child, unode&& right_child);
+  node(node* left_child, node* right_child);
 
-  bool is_leaf() const;
+  inline bool is_leaf() const {
+    return !(_left_child || _right_child);
+  }
 };
 
 struct node_comparer {

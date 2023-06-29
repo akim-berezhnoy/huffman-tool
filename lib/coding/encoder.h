@@ -1,9 +1,9 @@
 #pragma once
 
-#include "codeword.h"
-#include "huffman_tree.h"
-#include "istream_wrapper.h"
-#include "ostream_wrapper.h"
+#include "utility/codeword.h"
+#include "utility/huffman_tree.h"
+#include "wrappers/istream_wrapper.h"
+#include "wrappers/ostream_wrapper.h"
 
 #include <queue>
 
@@ -12,6 +12,7 @@
 #include <utility>
 #include <vector>
 
+using std::array;
 using std::istream;
 using std::ostream;
 using std::pair;
@@ -21,9 +22,8 @@ namespace huffman {
 class encoder {
 
   size_t file_length{};
-  size_t frequencies[UCHAR_STATES]{};
-  codeword codewords[UCHAR_STATES]{};
-
+  array<size_t, UCHAR_STATES> frequencies{};
+  array<codeword, UCHAR_STATES> codewords{};
   uchar letter = 0;
 
   encoder() = default;
@@ -32,7 +32,7 @@ class encoder {
 
   void encode(istream& is, ostream& os);
 
-  void build_huffman_tree(std::unique_ptr<node>& current, vector<bool>& code);
+  void build_huffman_tree(node* current, vector<bool>& code);
 
 public:
   friend void encode(istream& is, ostream& os);
