@@ -9,7 +9,6 @@
 #include <vector>
 
 using std::istream;
-using std::make_unique;
 using std::ostream;
 using std::unique_ptr;
 
