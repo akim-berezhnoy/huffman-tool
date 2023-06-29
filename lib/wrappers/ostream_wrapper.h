@@ -2,12 +2,12 @@
 
 #include "utility/constants.h"
 
+#include <array>
 #include <cassert>
 #include <cctype>
 #include <iostream>
 #include <ostream>
 
-using std::array;
 using std::ostream;
 
 namespace huffman {
@@ -21,7 +21,7 @@ class ostream_wrapper {
   ostream& _os;
 
   // Added buffered reading
-  array<char, STREAM_BUFFER_SIZE> STREAM_BUFFER{};
+  std::array<char, STREAM_BUFFER_SIZE> STREAM_BUFFER{};
   size_t STREAM_BUFFER_IT = 0;
 
   void write_next(uchar ch);

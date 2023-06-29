@@ -2,6 +2,7 @@
 
 #include "utility/codeword.h"
 
+#include <array>
 #include <cassert>
 
 using std::istream;
@@ -16,7 +17,7 @@ class istream_wrapper {
   size_t _occupied{};
 
   // Added buffered reading
-  array<char, STREAM_BUFFER_SIZE> STREAM_BUFFER{};
+  std::array<char, STREAM_BUFFER_SIZE> STREAM_BUFFER{};
   size_t STREAM_BUFFER_occupied = 0;
   size_t STREAM_BUFFER_iterator = 0;
 

@@ -7,12 +7,12 @@
 
 #include <queue>
 
+#include <array>
 #include <iostream>
 #include <limits>
 #include <utility>
 #include <vector>
 
-using std::array;
 using std::istream;
 using std::ostream;
 using std::pair;
@@ -22,8 +22,8 @@ namespace huffman {
 class encoder {
 
   size_t file_length{};
-  array<size_t, UCHAR_STATES> frequencies{};
-  array<codeword, UCHAR_STATES> codewords{};
+  std::array<size_t, UCHAR_STATES> frequencies{};
+  std::array<codeword, UCHAR_STATES> codewords{};
   uchar letter = 0;
 
   encoder() = default;

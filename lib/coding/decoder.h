@@ -6,11 +6,11 @@
 #include "wrappers/istream_wrapper.h"
 #include "wrappers/ostream_wrapper.h"
 
+#include <array>
 #include <istream>
 #include <set>
 #include <vector>
 
-using std::array;
 using std::set;
 using std::vector;
 
@@ -21,8 +21,8 @@ class decoder {
   std::vector<std::unique_ptr<node>> holder;
 
   size_t file_length{};
-  array<size_t, UCHAR_STATES> codewords_lengths{};
-  array<codeword, UCHAR_STATES> codewords{};
+  std::array<size_t, UCHAR_STATES> codewords_lengths{};
+  std::array<codeword, UCHAR_STATES> codewords{};
   set<uchar> used_letters{};
 
   decoder();
